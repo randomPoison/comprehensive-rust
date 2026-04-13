@@ -7,13 +7,11 @@ Copyright 2025 Google LLC
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
-Serialize/Deserialize style traits
+# Serialize/Deserialize style traits
 
 Crates like `serde` can implement serialization automatically.
 
 Derivable: ✅
-
-When to implement: Almost always.
 
 ```rust,compile_fail,editable
 # // Copyright 2025 Google LLC
@@ -34,6 +32,7 @@ struct Data {
 ```
 
 <details>
+
 - Provides serialization and deserialization functionality for a type.
 
 - When not to implement: If a type contains sensitive data that should not be

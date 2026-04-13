@@ -13,21 +13,18 @@ Like `Clone`, but indicates the type is can be bitwise copied.
 
 Derivable: ✅
 
-When to implement: If possible, but with caveats.
-
 ```rust,editable
 # // Copyright 2025 Google LLC
 # // SPDX-License-Identifier: Apache-2.0
 #
-// Copy is just a marker trait with Clone as a supertrait.
-// pub trait Copy: Clone { }
-
-#[derive(Clone, Copy)]
+#[derive(Debug, Clone, Copy)]
 pub struct Copyable(u8, u16, u32, u64);
 ```
 
 <details>
-- Clone represents a deep clone, and so does copy, but copy suggests to the compiler that a value can be copied bitwise.
+
+- Clone represents a deep clone, and so does copy, but copy suggests to the
+  compiler that a value can be copied bitwise.
 
 - When not to implement/derive: If you do not want to implicitly create copies
   when dereferencing values of a type, do not implement this trait.

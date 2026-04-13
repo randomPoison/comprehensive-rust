@@ -9,14 +9,6 @@ SPDX-License-Identifier: CC-BY-4.0
 
 # `as_` and `_ref`: reference conversions
 
-`as` is a prefix for methods that convert references. `ref` is a suffix (but
-prefer `as`.)
-
-`as` methods borrow out the primary piece of data contained in `&self`.
-
-Most commonly return references, but can also return a custom borrowing type or
-an unsafe pointer.
-
 ```rust,compile_fail,editable
 # // Copyright 2025 Google LLC
 # // SPDX-License-Identifier: Apache-2.0
@@ -30,13 +22,8 @@ impl<T> Rc<T> {
 
 impl<T> Option<T> {
     fn as_ref(&self) -> Option<&T>;
-    // Slices can be empty! So this is 0 or 1 elements.
-    fn as_slice(&self) -> &[T];
-}
 
-impl OwnedFd {
-    // Covered later.
-    fn as_fd(&'a self) -> BorrowedFd<'a>;
+    fn as_slice(&self) -> &[T];
 }
 ```
 

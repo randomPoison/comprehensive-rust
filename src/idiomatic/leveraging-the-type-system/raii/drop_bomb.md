@@ -72,9 +72,6 @@ fn main() -> io::Result<()> {
 - A common reason to use this pattern is when cleanup cannot be done in `Drop`,
   either because it is fallible or asynchronous.
 
-- This pattern is appropriate even in public APIs. It can help users catch bugs
-  early when they forget to explicitly finalize a transactional object.
-
 - If cleanup can safely happen in `Drop`, some APIs choose to panic only in
   debug builds. Whether this is appropriate depends on the guarantees your API
   must enforce.
@@ -86,7 +83,8 @@ fn main() -> io::Result<()> {
   `drop()` panic unconditionally?
 
   Expected answer: `commit()` takes `self` by value and runs `drop()`, which
-  would panic.
+  would panic. We could also `mem::forget(self)` to prevent the destructor from
+  running.
 
 ## More to explore
 

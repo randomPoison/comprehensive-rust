@@ -13,16 +13,10 @@ SPDX-License-Identifier: CC-BY-4.0
 
 Derivable: ✅
 
-When to implement: Almost always
-
 ```rust,editable
 # // Copyright 2025 Google LLC
 # // SPDX-License-Identifier: Apache-2.0
 #
-// pub trait Debug {
-//     fn fmt(&self, f: &mut Formatter<'_>) -> Result<(), Error>;
-// }
-
 #[derive(Debug)]
 pub struct Date {
     day: u8,
@@ -68,10 +62,11 @@ fn main() {
 ```
 
 <details>
+
 - Provides trivial "write to string" functionality.
 
-- Formatting for _debug information_ for programmers during , not appearance or
-  serialization.
+- Formatting for _debug information_ for programmers during development, not
+  appearance or serialization.
 
 - Allows for use of `{:?}` and `{#?}` interpolation in string formatting macros.
 

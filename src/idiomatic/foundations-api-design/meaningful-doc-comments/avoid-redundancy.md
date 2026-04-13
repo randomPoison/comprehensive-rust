@@ -90,10 +90,6 @@ documentation being updated accordingly!
   For example, if your function returns `Result`, you don't need to explain how
   `Result` or the question mark operators work.
 
-- If there is a complex topic involved with the functions and types you're
-  documenting, signpost to a "source of truth" if one exists such as an internal
-  document, a paper, a blog post etc.
-
 - Collaborate with Students: Go through the methods in the slide and discuss
   what might be relevant to an API user.
 

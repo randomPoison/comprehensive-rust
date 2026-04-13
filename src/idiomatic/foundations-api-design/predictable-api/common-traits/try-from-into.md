@@ -13,8 +13,6 @@ Fallible conversion from one type to another.
 
 Derivable: ❌
 
-When to implement: As-needed.
-
 ```rust,editable
 # // Copyright 2025 Google LLC
 # // SPDX-License-Identifier: Apache-2.0
@@ -45,6 +43,7 @@ fn main() {
 ```
 
 <details>
+
 - Provides conversion that can fail, returning a result type.
 
 - Like `From`/`Into`, prefer implementing `TryFrom` for types rather than

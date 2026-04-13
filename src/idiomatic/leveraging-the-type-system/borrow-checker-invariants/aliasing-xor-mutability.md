@@ -9,7 +9,7 @@ SPDX-License-Identifier: CC-BY-4.0
 
 # Mutually Exclusive References / "Aliasing XOR Mutability"
 
-We can use the mutual exclusion of `&T` and `&mut T` references to prevent data
+We can use the mutual exclusion of `&mut T` references to prevent data
 from being used before it is ready.
 
 ```rust,editable
@@ -23,8 +23,9 @@ impl DatabaseConnection {
     pub fn new() -> Self {
         Self {}
     }
-    pub fn results(&self) -> &[QueryResult] {
-        &[] // fake results
+    
+    pub fn begin_transaction(&mut self) -> Transaction<'_> {
+        Transaction { connection: self }
     }
 }
 
@@ -33,14 +34,13 @@ pub struct Transaction<'a> {
 }
 
 impl<'a> Transaction<'a> {
-    pub fn new(connection: &'a mut DatabaseConnection) -> Self {
-        Self { connection }
-    }
     pub fn query(&mut self, _query: &str) {
         // Send the query over, but don't wait for results.
     }
-    pub fn commit(self) {
+
+    pub fn commit(self) -> QueryResult {
         // Finish executing the transaction and retrieve the results.
+        QueryResult
     }
 }
 
@@ -48,47 +48,26 @@ fn main() {
     let mut db = DatabaseConnection::new();
 
     // The transaction `tx` mutably borrows `db`.
-    let mut tx = Transaction::new(&mut db);
+    let mut tx = db.begin_transaction();
     tx.query("SELECT * FROM users");
 
     // This won't compile because `db` is already mutably borrowed by `tx`.
-    // let results = db.results(); // ❌🔨
+    // let tx2 = db.begin_transaction(); // ❌🔨
 
     // The borrow of `db` ends when `tx` is consumed by `commit()`.
-    tx.commit();
+    let _result = tx.commit();
 
-    // Now it is possible to borrow `db` again.
-    let results = db.results();
+    // Once the first transaction finishes we can start another one.
+    let _tx2 = db.begin_transaction();
 }
 ```
 
 <details>
 
-- Motivation: In this database API queries are kicked off for asynchronous
-  execution and the results are only available once the whole transaction is
-  finished.
-
-  A user might think that queries are executed immediately, and try to read
-  results before they are made available. This API misuse could make the app
-  read incomplete or incorrect data.
-
-  While an obvious misunderstanding, situations such as this can happen in
-  practice.
-
-  Ask: Has anyone misunderstood an API by not reading the docs for proper use?
-
-  Expect: Examples of early-career or in-university mistakes and
-  misunderstandings.
-
-  As an API grows in size and user base, a smaller percentage of users has deep
-  knowledge of the system the API represents.
+- Motivation: We only want to support one in-flight transaction at a time.
 
 - This example shows how we can use Aliasing XOR Mutability to prevent this kind
   of misuse.
-
-- The code might read results before they are ready if the programmer assumes
-  that the queries execute immediately rather than kicked off for asynchronous
-  execution.
 
 - The constructor for the `Transaction` type takes a mutable reference to the
   database connection, and stores it in the returned `Transaction` value.
@@ -101,16 +80,7 @@ fn main() {
   other usage, such as starting further transactions or reading the results.
 
 - While a `Transaction` exists, we can't touch the `DatabaseConnection` variable
-  that was created from it.
-
-  Demonstrate: uncomment the `db.results()` line. Doing so will result in a
-  compile error, as `db` is already mutably borrowed.
-
-- Note: The query results not being public and placed behind a getter function
-  lets us enforce the invariant "users can only look at query results if there
-  is no active transactions."
-
-  If the query results were placed in a public struct field, this invariant
-  could be violated.
+  that was created from it. Uncomment the line that tries to create a second
+  transaction and show the resulting compiler error.
 
 </details>

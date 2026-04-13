@@ -21,12 +21,14 @@ fn sync_to_server() -> Future<Bool>;
 /// Sends local edits to the server, overwriting concurrent edits  
 /// if any happened.  
 fn sync_to_server() -> Future<Bool>;
+
 // bad
 /// Returns an error if sending the email fails.  
 fn send(&self, email: Email) -> Result<(), Error>;
 
 // good
 /// Queues the email for background delivery and returns immediately.  
+///
 /// Returns an error immediately if the email is malformed.  
 fn send(&self, email: Email) -> Result<(), Error>;
 ```

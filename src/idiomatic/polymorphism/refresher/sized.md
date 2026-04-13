@@ -25,7 +25,7 @@ type Dyn1 = OptionallySized<dyn Debug>;
 <details>
 
 - Motivation: Being able to specify between types whose size are known and
-  compile time and types whose size are known at runtime is useful for
+  compile time and types whose size are known at runtime is useful for ???
 
 - The Sized trait is automatically implemented by types with a known size at
   compile-time.

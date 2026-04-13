@@ -24,39 +24,11 @@ impl Drop for OwnedFd {
     }
 }
 
-impl Drop for TmpFile {
-    fn drop(&mut self) {
-        println!("TmpFile::drop() called with owned fd: {:?}", self.0);
-        // libc::unlink("/tmp/file")
-        // panic!("TmpFile::drop() panics");
-    }
-}
-
-#[derive(Debug)]
-struct TmpFile(OwnedFd);
-
-impl TmpFile {
-    fn open() -> Self {
-        Self(OwnedFd(2))
-    }
-
-    fn close(&self) {
-        panic!("TmpFile::close(): not implemented yet");
-    }
-}
-
 fn main() {
-    let owned_fd = OwnedFd(1);
+    let _fd = OwnedFd(1);
 
-    let file = TmpFile::open();
-
-    std::process::exit(0);
-
-    // std::mem::forget(file);
-
-    // file.close();
-
-    let _ = owned_fd;
+    // std::process::exit(0);
+    // std::mem::forget(_fd);
 }
 ```
 
@@ -70,10 +42,6 @@ fn main() {
   [`std::process::exit`](https://doc.rust-lang.org/std/process/fn.exit.html),
   `TmpFile::drop()` is never run because `exit()` terminates the process
   immediately without any opportunity for a `drop()` method to be called.
-
-  - You can prevent accidental use of `exit` by denying the
-    [`clippy::exit`](https://rust-lang.github.io/rust-clippy/stable/index.html#exit)
-    lint.
 
 - If you remove the `std::process::exit(0)` line, each `drop()` method in this
   simple case will run in turn.

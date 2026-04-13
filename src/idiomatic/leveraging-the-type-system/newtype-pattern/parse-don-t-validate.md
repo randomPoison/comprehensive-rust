@@ -7,7 +7,7 @@ Copyright 2025 Google LLC
 SPDX-License-Identifier: CC-BY-4.0
 -->
 
-# Parse, Don't Validate
+# Enforce Invariants at Construction
 
 The newtype pattern can be leveraged to enforce _invariants_.
 
@@ -17,6 +17,11 @@ The newtype pattern can be leveraged to enforce _invariants_.
 #
 pub struct Username(String);
 
+pub enum InvalidUsername {
+    CannotBeEmpty,
+    TooLong { len: usize },
+}
+
 impl Username {
     pub fn new(username: String) -> Result<Self, InvalidUsername> {
         if username.is_empty() {
@@ -25,7 +30,6 @@ impl Username {
         if username.len() > 32 {
             return Err(InvalidUsername::TooLong { len: username.len() })
         }
-        // Other validation checks...
         Ok(Self(username))
     }
 
@@ -33,10 +37,6 @@ impl Username {
         &self.0
     }
 }
-# pub enum InvalidUsername {
-#     CannotBeEmpty,
-#     TooLong { len: usize },
-# }
 ```
 
 <details>

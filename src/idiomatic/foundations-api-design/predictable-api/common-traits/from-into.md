@@ -13,8 +13,6 @@ Conversion from one type to another.
 
 Derivable: ❌, without crates like `derive_more`.
 
-When to implement: As-needed and convenient.
-
 ```rust,editable
 # // Copyright 2025 Google LLC
 # // SPDX-License-Identifier: Apache-2.0
@@ -33,11 +31,14 @@ impl From<&str> for ObviousImplementation {
     }
 }
 
+// `Into` is more natural to use as a trait bound.
+fn into_string<S: Into<String>>(s: S) {}
+fn string_from<T>(t: T) where String: From<T> {}
+
 fn main() {
-    // From String
     let obvious1 = ObviousImplementation::from("Hello, obvious!".to_string());
-    // From &str
     let obvious2 = ObviousImplementation::from("Hello, obvious!");
+
     // A From implementation implies an Into implementation, &str.into() ->
     // ObviousImplementation
     let obvious3: ObviousImplementation = "Hello, implementation!".into();
@@ -45,12 +46,13 @@ fn main() {
 ```
 
 <details>
+
 - Provides conversion functionality to types.
 
 - The two traits exist to express different areas you'll find conversion in
   codebases.
 
-- `From` provides a constructor-style function, whereas into provides a method
+- `From` provides a constructor-style function, whereas `Into` provides a method
   on an existing value.
 
 - Prefer writing `From<T>` implementations for a type you're authoring instead

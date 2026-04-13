@@ -25,33 +25,28 @@ impl File {
         println!("write '{data}' to file '{}'", handle.path);
         Ok(())
     }
-
-    fn close(mut self) -> std::io::Result<&'static str> {
-        Ok(self.0.take().unwrap().path)
-    }
 }
 
 impl Drop for File {
     fn drop(&mut self) {
-        if let Some(handle) = self.0.take() {
-            println!("automatically closing handle for file: {}", handle.path);
-        }
+        let handle = self.0.take().unwrap();
+        handle.close();
     }
 }
 
 struct Handle {
     path: &'static str,
 }
-impl Drop for Handle {
-    fn drop(&mut self) {
-        println!("closed handle for file: {}", self.path)
+
+impl Handle {
+    fn close(self) {
+        println!("Closing {}", self.path);
     }
 }
 
 fn main() -> std::io::Result<()> {
     let mut file = File::open("foo.txt")?;
     file.write("hello")?;
-    println!("manually closed file: {}", file.close()?);
     Ok(())
 }
 ```
