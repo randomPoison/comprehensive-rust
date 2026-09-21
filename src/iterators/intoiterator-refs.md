@@ -14,7 +14,7 @@ struct Grid {
 }
 
 impl<'a> IntoIterator for &'a Grid {
-    type Item = (u32, u32);
+    type Item = (&'a u32, &'a u32);
     type IntoIter = GridRefIter<'a>;
     fn into_iter(self) -> GridRefIter<'a> {
         GridRefIter { grid: self, i: 0, j: 0 }
@@ -28,9 +28,9 @@ struct GridRefIter<'a> {
 }
 
 impl<'a> Iterator for GridRefIter<'a> {
-    type Item = (u32, u32);
+    type Item = (&'a u32, &'a u32);
 
-    fn next(&mut self) -> Option<(u32, u32)> {
+    fn next(&mut self) -> Option<Self::Item> {
         if self.i >= self.grid.x_coords.len() {
             self.i = 0;
             self.j += 1;
@@ -38,7 +38,7 @@ impl<'a> Iterator for GridRefIter<'a> {
                 return None;
             }
         }
-        let res = Some((self.grid.x_coords[self.i], self.grid.y_coords[self.j]));
+        let res = Some((&self.grid.x_coords[self.i], &self.grid.y_coords[self.j]));
         self.i += 1;
         res
     }
@@ -79,7 +79,7 @@ fn main() {
   - The iterator for `&[T; N]` produces `&T`.
   - The iterator for `&mut [T; N]` produces `&mut T`.
 
-[1]: https://play.rust-lang.org/?version=stable&mode=debug&edition=2024&gist=947e371c7295af758504f01f149023a1
+[1]: https://play.rust-lang.org/?version=stable&mode=debug&edition=2024&gist=c3c29974bac8cc2065ca1b6608d5c8b9
 [`IntoIterator`]: https://doc.rust-lang.org/std/iter/trait.IntoIterator.html
 
 </details>

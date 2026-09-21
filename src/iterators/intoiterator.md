@@ -86,6 +86,7 @@ The example iterates over all combinations of x and y coordinates.
 
 Uncomment the commented line in `main` and show the compiler error. Note that
 `IntoIterator::into_iter` takes ownership of `self`. The next slide shows how we
-can fix this by implementing `IntoIterator` on `&Grid`.
+can avoid this by iterating over `&Grid` with an additional `IntoIterator`
+implementation.
 
 </details>
